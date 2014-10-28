@@ -32,13 +32,15 @@ public class TableRowLayout extends LinearLayoutCompat {
 		this.removeAllViews();
 
 		// determine column weightsum
-		float totalWeight = columnCount; // TODO: replace with calculated
-											// weightsum
+		float totalWeight = columnCount; 
+		// TODO: replace with calculated weightsum
+		
 		this.setWeightSum(totalWeight);
 
 		for (int i = 0; i < columnCount; i++) {
-			float columnWeight = 1.0f; // TODO: replace with calculated column
-										// weight
+			float columnWeight = 1.0f; 
+			// TODO: replace with calculated column weight
+			
 			View tempCellView = LayoutInflater.from(parent.getContext())
 					.inflate(R.layout.my_text_view, parent, false);
 			tempCellView.setLayoutParams(new TableRowLayout.LayoutParams(

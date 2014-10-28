@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,8 +36,7 @@ public class MainFragment extends Fragment {
 		return fragment;
 	}
 
-	public MainFragment() {
-	}
+	public MainFragment() {}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,7 +79,8 @@ public class MainFragment extends Fragment {
 						Toast.makeText(getActivity(), "position: " + position,
 								Toast.LENGTH_SHORT).show();
 					}
-				}));
+				}
+		));
 	}
 
 	@Override
@@ -89,9 +90,9 @@ public class MainFragment extends Fragment {
 				ARG_SECTION_NUMBER));
 	}
 
-	public static class RecyclerItemClickListener implements
-			RecyclerView.OnItemTouchListener
-			{
+	public static class RecyclerItemClickListener 
+		implements RecyclerView.OnItemTouchListener {
+		
 		private RecyclerItemClickListener.OnItemClickListener mListener;
 
 		public interface OnItemClickListener {
@@ -103,13 +104,13 @@ public class MainFragment extends Fragment {
 		public RecyclerItemClickListener(Context context,
 				RecyclerItemClickListener.OnItemClickListener listener) {
 			mListener = listener;
-			mGestureDetector = new GestureDetector(context,
-					new GestureDetector.SimpleOnGestureListener() {
-						@Override
-						public boolean onSingleTapUp(MotionEvent e) {
-							return true;
-						}
-					});
+			SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
+				@Override
+				public boolean onSingleTapUp(MotionEvent e) {
+					return true;
+				}
+			};
+			mGestureDetector = new GestureDetector(context, gestureListener);
 		}
 
 		@Override
@@ -124,8 +125,7 @@ public class MainFragment extends Fragment {
 		}
 
 		@Override
-		public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
-		}
+		public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {}
 
 	}
 }

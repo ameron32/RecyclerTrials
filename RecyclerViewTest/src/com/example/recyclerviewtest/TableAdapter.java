@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
-	private Columnable<String>[] mDataset; // TODO: make dataset generic
+	private Columnable<String>[] mDataset; 
+	// TODO: make dataset generic
 	private int mCellLayoutResource;
 	private int mTextViewResourceId;
 
@@ -65,7 +66,11 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 		/**
 		 * POPULATE INFORMATION INTO COLUMNS
 		 */
-		int columnCount = mDataset[0].getColumnCount();
+		int columnCount = mDataset[position].getColumnCount();
+		int maxColumnCount = mDataset[0].getColumnCount();
+		// use the smaller of the two column counts
+		columnCount = (columnCount < maxColumnCount) ? columnCount : maxColumnCount;
+		
 		for (int i = 0; i < columnCount; i++) {
 			int columnPosition = i;
 			String columnString = mDataset[position].get(columnPosition);
@@ -84,32 +89,32 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 		return mDataset.length;
 	}
 
-	public static class Column {
-		public interface ColumnInfo {
-			public int getDataTypeCount();
-
-			public Object getDataType(int position);
-		}
-
-		public enum DataType implements ColumnInfo {
-			String, Integer, ObjectId, Boolean, Pointer, UserRelation, Relation, Array;
-
-			@Override
-			public int getDataTypeCount() {
-				return values().length;
-			}
-
-			@Override
-			public Object getDataType(int position) {
-				return values()[position];
-			}
-		}
-
-		String title;
-		int weight;
-		DataType dataType;
-
-	}
+//	public static class Column {
+//		public interface ColumnInfo {
+//			public int getDataTypeCount();
+//
+//			public Object getDataType(int position);
+//		}
+//
+//		public enum DataType implements ColumnInfo {
+//			String, Integer, ObjectId, Boolean, Pointer, UserRelation, Relation, Array;
+//
+//			@Override
+//			public int getDataTypeCount() {
+//				return values().length;
+//			}
+//
+//			@Override
+//			public Object getDataType(int position) {
+//				return values()[position];
+//			}
+//		}
+//
+//		String title;
+//		int weight;
+//		DataType dataType;
+//
+//	}
 
 	// private OnCellClickListener listener;
 	//

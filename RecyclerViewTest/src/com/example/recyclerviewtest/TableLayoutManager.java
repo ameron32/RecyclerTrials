@@ -18,7 +18,4 @@ public class TableLayoutManager extends
     super(context);
     // TODO Auto-generated constructor stub
   }
-  
-  
-  
 }
