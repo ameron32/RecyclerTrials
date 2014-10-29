@@ -1,20 +1,19 @@
 package com.example.recyclerviewtest;
 
-import com.example.recyclerviewtest.TableAdapter.Columnable;
-
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.example.recyclerviewtest.DummyContent.ObjectPlus;
+import com.example.recyclerviewtest.TableAdapter.Columnable;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -46,17 +45,22 @@ public class MainFragment extends Fragment {
 		return rootView;
 	}
 
-	private static final Columnable<String>[] DATA_SET = DummyContent.DUMMY_DATA;
+	private static final Columnable<ObjectPlus>[] DATA_SET = DummyContent.DUMMY_DATA;
 	private RecyclerView mRecyclerView;
 	private LinearLayoutManager mLayoutManager;
 	private TableAdapter mAdapter;
+	private EditText mEditor;
+	private ImageButton mButton;
+	
+	private int mRow, mColumn;
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		mEditor = (EditText) getActivity().findViewById(R.id.my_recycler_editor);
 		mRecyclerView = (RecyclerView) getActivity().findViewById(
 				R.id.my_recycler_view);
-
+		
 		// use this setting to improve performance if you know that changes
 		// in content do not change the layout size of the RecyclerView
 		mRecyclerView.setHasFixedSize(true);
@@ -66,21 +70,38 @@ public class MainFragment extends Fragment {
 		mRecyclerView.setLayoutManager(mLayoutManager);
 
 		// specify an adapter (see also next example)
-		mAdapter = new TableAdapter(DATA_SET, R.layout.my_table_row_layout,
+		mAdapter = new TableAdapter<ObjectPlus>(DATA_SET, R.layout.my_table_row_layout,
 				R.id.textview);
 		mRecyclerView.setAdapter(mAdapter);
 
-		mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(
+		mRecyclerView.addOnItemTouchListener(new RecyclerCellClickListener(
 				getActivity(),
-				new RecyclerItemClickListener.OnItemClickListener() {
+				new RecyclerCellClickListener.OnCellClickListener() {
 
 					@Override
-					public void onItemClick(View view, int position) {
-						Toast.makeText(getActivity(), "position: " + position,
-								Toast.LENGTH_SHORT).show();
+					public void onCellClick(View view, int rowPosition,
+							int columnPosition) {
+						mRow = rowPosition;
+						mColumn = columnPosition;
+						
+						TextView tv = (TextView) view;
+						String str = String.valueOf(tv.getText());
+						mEditor.setText(str);
 					}
 				}
 		));
+		
+		mButton = (ImageButton) getActivity().findViewById(R.id.my_recycler_editor_button);
+		mButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				ObjectPlus itemAt = (ObjectPlus) mAdapter.getItemAt(mRow, mColumn);
+				String text = mEditor.getText().toString();
+				itemAt.setText(text);
+				mAdapter.notifyItemChanged(mRow);
+			}
+		});
 	}
 
 	@Override
@@ -90,42 +111,43 @@ public class MainFragment extends Fragment {
 				ARG_SECTION_NUMBER));
 	}
 
-	public static class RecyclerItemClickListener 
-		implements RecyclerView.OnItemTouchListener {
-		
-		private RecyclerItemClickListener.OnItemClickListener mListener;
+//	public static class RecyclerItemClickListener 
+//		implements RecyclerView.OnItemTouchListener {
+//		
+//		private RecyclerItemClickListener.OnItemClickListener mListener;
+//
+//		public interface OnItemClickListener {
+//			public void onItemClick(View view, int position);
+//		}
+//
+//		GestureDetector mGestureDetector;
+//
+//		public RecyclerItemClickListener(Context context,
+//				RecyclerItemClickListener.OnItemClickListener listener) {
+//			mListener = listener;
+//			SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
+//				@Override
+//				public boolean onSingleTapUp(MotionEvent e) {
+//					return true;
+//				}
+//			};
+//			mGestureDetector = new GestureDetector(context, gestureListener);
+//		}
+//
+//		@Override
+//		public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+//			View childView = view.findChildViewUnder(e.getX(), e.getY());
+//			if (childView != null && mListener != null
+//					&& mGestureDetector.onTouchEvent(e)) {
+//				mListener.onItemClick(childView,
+//						view.getChildPosition(childView));
+//			}
+//			return false;
+//		}
+//
+//		@Override
+//		public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {}
+//
+//	}
 
-		public interface OnItemClickListener {
-			public void onItemClick(View view, int position);
-		}
-
-		GestureDetector mGestureDetector;
-
-		public RecyclerItemClickListener(Context context,
-				RecyclerItemClickListener.OnItemClickListener listener) {
-			mListener = listener;
-			SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
-				@Override
-				public boolean onSingleTapUp(MotionEvent e) {
-					return true;
-				}
-			};
-			mGestureDetector = new GestureDetector(context, gestureListener);
-		}
-
-		@Override
-		public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
-			View childView = view.findChildViewUnder(e.getX(), e.getY());
-			if (childView != null && mListener != null
-					&& mGestureDetector.onTouchEvent(e)) {
-				mListener.onItemClick(childView,
-						view.getChildPosition(childView));
-			}
-			return false;
-		}
-
-		@Override
-		public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {}
-
-	}
 }

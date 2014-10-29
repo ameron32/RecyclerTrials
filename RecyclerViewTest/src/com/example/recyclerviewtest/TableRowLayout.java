@@ -58,4 +58,64 @@ public class TableRowLayout extends LinearLayoutCompat {
 				.findViewById(textViewResourceId);
 		textView.setText(columnInfo);
 	}
+	
+	public View findCellViewUnder(View parentView, float x, float y) {
+		return this.getChildAt(findCellPositionUnder(parentView, x, y));
+	}
+	
+	public int findCellPositionUnder(View parentView, float x, float y) {
+		final int childCount = this.getChildCount();
+		
+		int iX = Math.round(x);
+		int iY = Math.round(y);
+		
+		for (int i = 0; i < childCount; i++) {
+			View child = this.getChildAt(i);
+			if (isViewContains(child, parentView, iX, iY)) { 
+				return i; 
+			}
+		}
+
+		return -1;
+	}
+	
+	private boolean isViewContains(View view, View parentView, int rx, int ry) {
+	    int[] l = new int[2];
+	    view.getLocationOnScreen(l);
+	    int x = l[0];
+	    int y = l[1];
+	    int w = view.getWidth();
+	    int h = view.getHeight();
+	    
+	    int[] k = new int[2];
+	    parentView.getLocationOnScreen(k);
+	    int oX = k[0];
+	    int oY = k[1];
+	    
+	    int roX = oX + rx;
+	    int roY = oY + ry;
+	    
+//	    Log.i("isViewContains", c(rx, x, w, ry, y, h));
+//	    Log.i("isViewContains", c("<", x, roX, x + w));
+//	    Log.i("isViewContains", c("<", y, roY, y + h));
+
+	    if (roX < x || roX > x + w || roY < y || roY > y + h) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	private String c(String a, int...ints) {
+		StringBuilder sb = new StringBuilder();
+		for (int i : ints) {
+			String s = String.valueOf(i);
+			sb.append("[");
+			sb.append(s);
+			sb.append("]");
+			sb.append(" ");
+			sb.append(a);
+			sb.append(" ");
+		}
+		return sb.toString();
+	}
 }

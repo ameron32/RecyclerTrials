@@ -4,8 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
-	private Columnable<String>[] mDataset; 
+public class TableAdapter<T> extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
+	private Columnable<T>[] mDataset; 
 	// TODO: make dataset generic
 	private int mCellLayoutResource;
 	private int mTextViewResourceId;
@@ -24,7 +24,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 	}
 
 	// Provide a suitable constructor (depends on the kind of dataset)
-	public TableAdapter(Columnable<String>[] myDataset, int cellLayoutResource,
+	public TableAdapter(Columnable<T>[] myDataset, int cellLayoutResource,
 			int textViewResourceId) {
 		mDataset = myDataset;
 		mCellLayoutResource = cellLayoutResource;
@@ -73,7 +73,7 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 		
 		for (int i = 0; i < columnCount; i++) {
 			int columnPosition = i;
-			String columnString = mDataset[position].get(columnPosition);
+			String columnString = mDataset[position].get(columnPosition).toString();
 
 			holder.mTableRowLayoutView.populateColumnTextView(columnPosition,
 					columnString, mTextViewResourceId);
@@ -88,49 +88,10 @@ public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> 
 		 */
 		return mDataset.length;
 	}
-
-//	public static class Column {
-//		public interface ColumnInfo {
-//			public int getDataTypeCount();
-//
-//			public Object getDataType(int position);
-//		}
-//
-//		public enum DataType implements ColumnInfo {
-//			String, Integer, ObjectId, Boolean, Pointer, UserRelation, Relation, Array;
-//
-//			@Override
-//			public int getDataTypeCount() {
-//				return values().length;
-//			}
-//
-//			@Override
-//			public Object getDataType(int position) {
-//				return values()[position];
-//			}
-//		}
-//
-//		String title;
-//		int weight;
-//		DataType dataType;
-//
-//	}
-
-	// private OnCellClickListener listener;
-	//
-	// public void setOnCellClickListener(OnCellClickListener listener) {
-	// this.listener = listener;
-	// }
-	//
-	// public OnCellClickListener getOnCellClickListener() {
-	// return listener;
-	// }
-	//
-	// public interface OnCellClickListener {
-	//
-	// public void onCellClick(ViewGroup parentRowLayout, View cellView,
-	// int columnPosition, Object object);
-	// }
+	
+	public T getItemAt(int rowPosition, int columnPosition) {
+		return mDataset[rowPosition].get(columnPosition);
+	}
 
 	public interface Columnable<T> {
 		public T get(int columnPosition);
